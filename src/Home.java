@@ -14,6 +14,7 @@ import java.awt.event.*;
 // Home Screen Panel Including Main JFrame
 public class Home extends JPanel implements ActionListener {
 	private Image bg; // Background Image
+	private JPanel screens; // Layout
 	
 	// Fonts
 	private final Font titleFont = new Font(Font.SANS_SERIF, Font.BOLD, 100);
@@ -40,36 +41,29 @@ public class Home extends JPanel implements ActionListener {
 //	    title2.setBounds((getWidth() / 2) - ((size2.width / 2) - 80), (getHeight() / 2) - 200, size2.width, size2.height);
 //		this.add(title2);
 		
-		JLabel howToPlay = new JLabel("How to Play"); // How to Play Text
-		howToPlay.setFont(bottomFont);
+		JLabel howToPlay = TDUtilties.createLink("How to Play", bottomFont, new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CardLayout cl = (CardLayout) (screens.getLayout());
+				cl.show(screens, "howtoplay");
+			}
+		}); // How to Play Text
 		Dimension howToPlaySize = howToPlay.getPreferredSize();
 	    howToPlay.setBounds((getWidth() / 4), getHeight() - 150, howToPlaySize.width, howToPlaySize.height);
 		this.add(howToPlay);
 		
-		JLabel credits = new JLabel("Credits"); // Credits Text
-		credits.setFont(bottomFont);
+		JLabel credits = TDUtilties.createLink("Credits", bottomFont, new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CardLayout cl = (CardLayout) (screens.getLayout());
+				cl.show(screens, "credits");
+			}
+		}); // Credits Text
 		Dimension creditsSize = credits.getPreferredSize();
 		credits.setBounds((getWidth() / 3) * 2, getHeight() - 150, creditsSize.width, creditsSize.height);
 		this.add(credits);
 		
-		JButton playBtn = new JButton("  Play  ");
-		playBtn.setFont(bottomFont);
-		playBtn.setBorderPainted(false);
-		playBtn.setFocusPainted(false);
-		playBtn.setBackground(Color.getHSBColor(45f, 50, 100));
-		playBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-        		playBtn.setBackground(Color.getHSBColor(45f, 100, 100));
-        		playBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-        		playBtn.setBackground(Color.getHSBColor(45f, 50, 100));
-        		playBtn.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
+		JButton playBtn = TDUtilties.createButton("   Play   ", bottomFont, 45f, 50, 100, 100, new ActionListener() {@Override public void actionPerformed(ActionEvent e) { System.out.println("Hello Testing"); }});
 		Dimension playBtnSize = playBtn.getPreferredSize();
 		playBtn.setBounds((getWidth() / 2) - (playBtnSize.width / 2), (getHeight() / 2) - 125, playBtnSize.width, playBtnSize.height);
 		this.add(playBtn);
@@ -95,10 +89,16 @@ public class Home extends JPanel implements ActionListener {
 	public void setupWindow(Home homeScreen) {
 		JFrame frame = new JFrame("Top Down");
 		
+		// Initialize the Card Layout Manager and Add all Screens to It
+		screens = new JPanel(new CardLayout());
+		screens.add(homeScreen, "home");
+		screens.add(new HowToPlay(), "howtoplay");
+		screens.add(new Credits(), "credits");
+		
 		frame.setSize(homeScreen.getWidth(), homeScreen.getHeight() - 50);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(homeScreen);
+		frame.add(screens, BorderLayout.CENTER);
 		frame.setResizable(false);
 		frame.setVisible(true);
 	}
