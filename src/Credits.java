@@ -17,6 +17,7 @@ public class Credits extends JPanel {
 	private String[] credits = {
 			"Game Writers: Dev Andra and Nikhil Pellakuru"
 	};
+	private Timer movingCredits;
 	
 	// Fonts
 	private final Font titleFont = new Font(Font.SANS_SERIF, Font.BOLD, 80);
@@ -26,7 +27,7 @@ public class Credits extends JPanel {
 		// Collect the Background Image
 		ImageIcon bgIcon = new ImageIcon("cemetary.jpg");
 		bg = bgIcon.getImage();
-		Timer movingCredits = new Timer(1, new ActionListener() {
+		movingCredits = new Timer(1, new ActionListener() {
 		    private int yOffset = 0; // Initial Y offset
 		    
 		    @Override
@@ -38,19 +39,21 @@ public class Credits extends JPanel {
 		        for (Component component : components) {
 		            if (component instanceof JLabel) {
 		                JLabel label = (JLabel) component;
-		                label.setLocation(label.getX(), label.getY() - 1); // Move label up
+		                label.setLocation(label.getX(), label.getY() - 2); // Move label up
 		            }
 		        }
 		        
 		        // If the topmost label reaches the top of the panel, reset positions
-		        if (components.length > 0 && components[components.length - 1].getY() + yOffset <= (getHeight() + 1250) * -1) {
-		            yOffset = getHeight(); // Reset Y offset to the height of the panel
-		            for (Component component : components) {
-		                if (component instanceof JLabel) {
-		                	component.setVisible(false);
-		                }
-		            }
-		            makeText(); // Remake the Credits
+		        if (components.length > 0 && components[components.length - 1].getY() + yOffset <= (getHeight() + 1000) * -1) {
+//		            yOffset = getHeight(); // Reset Y offset to the height of the panel
+//		            for (Component component : components) {
+//		                if (component instanceof JLabel) {
+//		                	component.setVisible(false);
+//		                }
+//		            }
+//		            makeText(); // Remade the Credits
+		        	movingCredits.stop();
+		        	System.exit(200);
 		        }
 		        
 		        repaint();
@@ -85,13 +88,13 @@ public class Credits extends JPanel {
 		JLabel title = new JLabel("Credits"); // First Title Word
 		title.setFont(titleFont);
 		Dimension size = title.getPreferredSize();
-		title.setBounds((getWidth() / 2) - ((size.width / 2)), getHeight() + 50, size.width, size.height);
+		title.setBounds((getWidth() / 2) - ((size.width / 2)), getHeight() + 150, size.width, size.height);
 		this.add(title);
 		
 		for (int i = 0; i < credits.length; i++) {
 			JLabel creditsLabel = TDUtilties.createText(credits[i], creditsFont);
 			Dimension creditsSize = creditsLabel.getPreferredSize();
-			creditsLabel.setBounds((getWidth() / 2) - (creditsSize.width / 2), (i * 80) + ((getHeight() + 50) + 100), creditsSize.width, creditsSize.height);
+			creditsLabel.setBounds((getWidth() / 2) - (creditsSize.width / 2), (i * 80) + ((getHeight() + 50) + 250), creditsSize.width, creditsSize.height);
 			this.add(creditsLabel);
 		}
 	}
